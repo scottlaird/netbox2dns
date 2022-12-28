@@ -71,22 +71,25 @@ are available.
 
 ## Use
 
-Run `netbox2dns --dry_run=true`.
+Short version: run `netbox2dns diff`, followed by `netbox2dns push` if
+the diff looks acceptable.
 
-Upon startup, netbox2dns will fetch all IP Address records from
-Netbox *and* all A/AAAA/PTR records from the listed zones.
+Upon startup, netbox2dns will fetch all IP Address records from Netbox
+*and* all A/AAAA/PTR records from the listed zones.  netbox2dns
+ignores other record types, including SOA, NS, and CNAME.
 
-For each address in Netbox that is in state `active` and has a
-non-empty DNS name, netbox2dns will attempt to add a forward DNS
-record from the DNS name to the address, and a reverse DNS record from
-the address to the DNS name.  IPv4 and IPv6 should be handled
-automatically.
+For each active IP address in Netbox that has a DNS name, netbox2dns
+will try to add both forward and reverse DNS records.  Both IPv4
+and IPv6 should be handled automatically.
 
-netbox2dns will then show a diff between the A/AAAA/PTR records found
-in the existing zones and the records generated from Netbox.  If the
-`--dry_run=false` flag is set, then it will add missing records, but
-will not remove records from DNS that are not in Netbox.  If the
-`delete_entries: true` setting is enabled for a zone, then netbox2dns
-will remove any unknown A, AAAA, or PTR records from Google Cloud DNS.
-This makes the most sense for reverse DNS, when Netbox is the source
-of truth for all IP address assignement.
+This tool has 2 operating modes, `diff` and `push`.  `diff` shows
+significant differences between DNS zones and Netbox, and `push` makes
+changes to DNS.
+
+By default, netbox2dns will only *add* records from Netbox, and will
+not remove DNS records for IP addresses that are not in Netbox.  In
+cases where Netbox is authoritative for zone information, you can add
+the `delete_entries: true` setting for each zone in the config file.
+This will make netbox2dns remove unknown A, AAAA, or PTR records from
+Google Cloud DNS.  This makes the most sense for reverse DNS, when
+Netbox is the source of truth for all IP address assignement.
