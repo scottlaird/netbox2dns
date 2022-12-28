@@ -12,7 +12,7 @@ as they're able to handle incremental record additions and removals.
 ## Compiling
 
 Check out a copy of the `netbox2dns` code from GitHub using `git clone
-https://github.com/scottlaird/netbox2dns.git`.  Then, run 'go build
+https://github.com/scottlaird/netbox2dns.git`.  Then, run `go build
 cmd/netbox2dns/netbox2dns.go`, and it should generate a `netbox2dns`
 binary.  This can be copied to other directories or other systems as
 needed.
@@ -70,6 +70,8 @@ formats](https://github.com/scottlaird/netbox2dns/tree/main/testdata/config4)
 are available.
 
 ## Use
+
+Run `netbox2dns --dry_run=true`.
 
 Upon startup, netbox2dns will fetch all IP Address records from
 Netbox *and* all A/AAAA/PTR records from the listed zones.
