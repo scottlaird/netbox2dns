@@ -3,6 +3,8 @@
 // documenation.
 
 // A #CloudDNSZone is a DNS zone hosted on Google Cloud DNS.
+// Each field has a type ("string"), optionally a default (*),
+// and some constraints.
 #CloudDNSZone: {
 	zonetype:        *"clouddns" | string
 	name:            string
