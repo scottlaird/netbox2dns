@@ -16,7 +16,9 @@
 // definition.  For example, #Route53Zone for AWS.  The zonetype, name,
 // ttl, and delete_entries fields are required.  Add any other fields
 // needed to define zones for your provider, similar to `project` and
-// `zonename`.
+// `zonename`.  You will also need to update config.go with any new fields,
+// and then add code for talking to your provider in dns.go and elsewhere.
+// You'll probably want to use clouddns.go as an example.
 
 // #Zone should be a union of all supported Zone types.  If you add
 // new providers, then you'll probably need to add something like `|
