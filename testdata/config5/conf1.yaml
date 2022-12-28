@@ -1,0 +1,9 @@
+config:
+  netbox: 
+    host:  "netbox.example.com"
+    token: "changeme"
+
+  defaults:
+    project: "random-string"
+    ttl: 300
+  
