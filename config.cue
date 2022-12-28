@@ -29,7 +29,7 @@
 #Zone: #CloudDNSZone
 
 // This is the template for the actual configuration.
-#Config: {
+config: {
 	// At least one zone is required.
 	zones: [#Zone, ...#Zone]
 
@@ -58,5 +58,3 @@
 		project?:  *"foo" | string
 	}
 }
-
-config: #Config
