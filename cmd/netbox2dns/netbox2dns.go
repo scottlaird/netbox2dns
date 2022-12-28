@@ -9,12 +9,12 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	log "github.com/golang/glog"
 	"github.com/netbox-community/go-netbox/netbox/client"
-	"github.com/scottlaird/netbox2dns/netbox"
 	nb "github.com/scottlaird/netbox2dns"
+	"github.com/scottlaird/netbox2dns/netbox"
 )
 
 var (
-	dryRun       = flag.Bool("dry_run", true, "Actually do things")
+	dryRun = flag.Bool("dry_run", true, "Actually do things")
 )
 
 func main() {
@@ -24,17 +24,16 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
-	
+
 	cfg, err := nb.ParseConfig(file)
 	if err != nil {
 		log.Fatalf("Failed to parse config: %v")
 	}
 
-	fmt.Printf("Config: %+v\n", cfg)
+	log.Infof("Config read: %+v", cfg)
 
 	ctx := context.Background()
-	
+
 	zones, err := nb.ImportZones(ctx, cfg)
 	if err != nil {
 		log.Fatalf("Unable to import existing zones: %v", err)
@@ -45,7 +44,7 @@ func main() {
 		log.Fatalf("Unable to marshal: %v", err)
 	}
 
-	fmt.Printf("Found %d zones (%d bytes)\n", len(zones.Zones), len(b))
+	log.Infof("Found %d zones (%d bytes)", len(zones.Zones), len(b))
 
 	newZones := nb.NewZones()
 	for _, cz := range cfg.ZoneMap {
@@ -57,47 +56,34 @@ func main() {
 	c := client.New(transport, nil)
 
 	addrs, err := netbox.ListIPAddrs(c)
-	for _, addr := range addrs {
-		if addr.DNSName != "" && addr.Status == "active" {
-			forward := nb.Record{
-				Name:    addr.DNSName + ".",
-				Rrdatas: []string{addr.Address.Addr().String()},
-			}
-			reverse := nb.Record{
-				Name:    nb.ReverseName(addr.Address.Addr()),
-				Type:    "PTR",
-				Rrdatas: []string{addr.DNSName + "."},
-			}
-			if addr.Address.Addr().Is4() {
-				forward.Type = "A"
-			} else {
-				forward.Type = "AAAA"
-			}
-
-			err = newZones.AddRecord(&forward)
-			if err != nil {
-				log.Fatalf("Unable to add forward record: %v", err)
-			}
-			err = newZones.AddRecord(&reverse)
-			if err != nil {
-				log.Warningf("Unable to add reverse record: %v", err)
-			}
-		}
+	if err != nil {
+		log.Fatalf("Unable to fetch IP Addresses from Netbox: %v", err)
 	}
+
+	fmt.Printf("Found %d IP Addresses\n", len(addrs))
+
+	err = newZones.AddAddrs(addrs)
+	if err != nil {
+		log.Fatalf("Unable to add IP addresses: %v", err)
+	}
+
 	b2, err := json.MarshalIndent(newZones, "", "  ")
 	if err != nil {
 		log.Fatalf("Unable to marshal: %v", err)
 	}
 
-	//	fmt.Printf("JSON: %s\n", string(b2))
-	fmt.Printf("Created %d zones (%d bytes)\n", len(newZones.Zones), len(b2))
+	log.Infof("Created %d zones (%d bytes)", len(newZones.Zones), len(b2))
 
 	zd := zones.Compare(newZones)
+
+	removeCount := 0
+	addCount := 0
 
 	for _, zone := range zd {
 		for _, rec := range zone.RemoveRecords {
 			for _, rr := range rec {
 				if rr.Type == "A" || rr.Type == "AAAA" || rr.Type == "PTR" {
+					removeCount++
 					fmt.Printf("- %s %s %d %v\n", rr.Name, rr.Type, rr.Ttl, rr.Rrdatas)
 					if !*dryRun {
 						err := nb.RemoveRecord(ctx, cfg.ZoneMap[zone.Name], rr)
@@ -110,6 +96,7 @@ func main() {
 		}
 		for _, rec := range zone.AddRecords {
 			for _, rr := range rec {
+				addCount++
 				fmt.Printf("+ %s %s %d %v\n", rr.Name, rr.Type, rr.Ttl, rr.Rrdatas)
 				if !*dryRun {
 					err = nb.WriteRecord(ctx, cfg.ZoneMap[zone.Name], rr)
@@ -120,4 +107,9 @@ func main() {
 			}
 		}
 	}
+
+	if *dryRun {
+		fmt.Printf("[dry run] ")
+	}
+	fmt.Printf("Complete.  %d removals, %d additions found\n", removeCount, addCount)
 }

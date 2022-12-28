@@ -8,8 +8,8 @@ import (
 	"cuelang.org/go/cue"
 	"cuelang.org/go/cue/cuecontext"
 	"cuelang.org/go/encoding/gocode/gocodec"
-	"cuelang.org/go/encoding/yaml"
 	"cuelang.org/go/encoding/json"
+	"cuelang.org/go/encoding/yaml"
 
 	log "github.com/golang/glog"
 
@@ -175,6 +175,6 @@ func parseCUE(filename string, cfg *ConfigRoot, cctx *cue.Context) error {
 	}
 	config := cctx.CompileBytes(b)
 	config.Decode(cfg)
-	
+
 	return nil
 }

@@ -2,13 +2,12 @@ package netbox2dns
 
 import (
 	"fmt"
+	log "github.com/golang/glog"
+	"github.com/scottlaird/netbox2dns/netbox"
 	"net/netip"
 	"sort"
 	"strings"
-
-	//log "github.com/golang/glog"
 )
-
 
 // Type ByLength is a wrapper for []string for sorting the string
 // slice by length, from longest to shortest.
@@ -25,7 +24,7 @@ func (a ByLength) Swap(i, j int) {
 }
 
 type Zones struct {
-	Zones map[string]*Zone
+	Zones       map[string]*Zone
 	sortedZones []*Zone
 }
 
@@ -52,12 +51,12 @@ func (z *Zones) AddZone(zone *Zone) {
 
 func (z *Zones) NewZone(cz *ConfigZone) {
 	zone := Zone{
-		Name:     cz.Name,
-		ZoneName: cz.ZoneName,
-		Project:  cz.Project,
+		Name:          cz.Name,
+		ZoneName:      cz.ZoneName,
+		Project:       cz.Project,
 		DeleteEntries: cz.DeleteEntries,
-		Ttl: cz.Ttl,
-		Records:  make(map[string][]*Record),
+		Ttl:           cz.Ttl,
+		Records:       make(map[string][]*Record),
 	}
 	z.AddZone(&zone)
 }
@@ -103,12 +102,12 @@ func (z *Zones) Compare(newer *Zones) []*ZoneDelta {
 }
 
 type Zone struct {
-	Name     string
-	ZoneName string
-	Project  string
+	Name          string
+	ZoneName      string
+	Project       string
 	DeleteEntries bool
-	Ttl int64
-	Records  map[string][]*Record
+	Ttl           int64
+	Records       map[string][]*Record
 }
 
 func (z *Zone) AddRecord(r *Record) {
@@ -223,4 +222,35 @@ func reverseName6(addr netip.Addr) string {
 		ret = ret + fmt.Sprintf("%x.%x.", b[i]&0xf, (b[i]&0xf0)>>4)
 	}
 	return ret + "ip6.arpa."
+}
+
+func (z *Zones) AddAddrs(addrs netbox.IPAddrs) error {
+	for _, addr := range addrs {
+		if addr.DNSName != "" && addr.Status == "active" {
+			forward := Record{
+				Name:    addr.DNSName + ".",
+				Rrdatas: []string{addr.Address.Addr().String()},
+			}
+			reverse := Record{
+				Name:    ReverseName(addr.Address.Addr()),
+				Type:    "PTR",
+				Rrdatas: []string{addr.DNSName + "."},
+			}
+			if addr.Address.Addr().Is4() {
+				forward.Type = "A"
+			} else {
+				forward.Type = "AAAA"
+			}
+
+			err := z.AddRecord(&forward)
+			if err != nil {
+				return fmt.Errorf("Unable to add forward record for %q: %v", addr.DNSName, err)
+			}
+			err = z.AddRecord(&reverse)
+			if err != nil {
+				log.Warningf("Unable to add reverse record: %v", err)
+			}
+		}
+	}
+	return nil
 }

@@ -1,8 +1,8 @@
 package netbox2dns
 
 import (
-	"testing"
 	"net/netip"
+	"testing"
 )
 
 func TestAddZonesSorted(t *testing.T) {
@@ -82,4 +82,3 @@ func TestReverseName6(t *testing.T) {
 		t.Errorf("ReverseName(%s) wrong, got %q want %q", addr.String(), got, want)
 	}
 }
-

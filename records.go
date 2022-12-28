@@ -27,4 +27,3 @@ func (r *Record) Compare(newer *Record) string {
 
 	return ""
 }
-

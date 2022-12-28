@@ -5,46 +5,46 @@ import (
 )
 
 func TestFindConfig(t *testing.T) {
-	dirs := []string{"./testdata/config1","./testdata/config2","./testdata/config3"}
+	dirs := []string{"./testdata/config1", "./testdata/config2", "./testdata/config3"}
 
-	want1 := "./testdata/config1/conf.yaml" 
+	want1 := "./testdata/config1/conf.yaml"
 	got, err := findConfig("conf", dirs, configExtensions)
 	if err != nil {
 		t.Fatalf("findConfig() returned an error: %v", err)
 	}
 	if got != want1 {
 		t.Errorf("findConfig(): got %q, want %q", got, want1)
-		
+
 	}
 
-	want2 := "./testdata/config2/conf.json" 
-	got, err = findConfig("conf", dirs, []string{"json",})
+	want2 := "./testdata/config2/conf.json"
+	got, err = findConfig("conf", dirs, []string{"json"})
 	if err != nil {
 		t.Fatalf("findConfig() returned an error: %v", err)
 	}
 	if got != want2 {
 		t.Errorf("findConfig(): got %q, want %q", got, want2)
-		
+
 	}
 
-	want3 := "./testdata/config3/conf.cue" 
-	got, err = findConfig("conf", dirs, []string{"cue",})
+	want3 := "./testdata/config3/conf.cue"
+	got, err = findConfig("conf", dirs, []string{"cue"})
 	if err != nil {
 		t.Fatalf("findConfig() returned an error: %v", err)
 	}
 	if got != want3 {
 		t.Errorf("findConfig(): got %q, want %q", got, want3)
-		
+
 	}
-	
-	want4 := "./testdata/config2/conf.json" 
-	got, err = findConfig("conf", dirs, []string{"json","cue"})
+
+	want4 := "./testdata/config2/conf.json"
+	got, err = findConfig("conf", dirs, []string{"json", "cue"})
 	if err != nil {
 		t.Fatalf("findConfig() returned an error: %v", err)
 	}
 	if got != want4 {
 		t.Errorf("findConfig(): got %q, want %q", got, want4)
-		
+
 	}
 }
 
