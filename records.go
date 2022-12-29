@@ -2,6 +2,7 @@ package netbox2dns
 
 import (
 	"fmt"
+	"strings"
 )
 
 type Record struct {
@@ -26,4 +27,12 @@ func (r *Record) Compare(newer *Record) string {
 	}
 
 	return ""
+}
+
+func (r *Record) NameNoDot() string {
+	return strings.TrimRight(r.Name, ".")
+}
+
+func (r *Record) RrdataNoDot() string {
+	return strings.TrimRight(r.Rrdatas[0], ".")
 }

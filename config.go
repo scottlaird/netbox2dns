@@ -47,6 +47,7 @@ type ConfigZone struct {
 	ZoneType      string `json:"zonetype,omitempty"`
 	Name          string `json:"name,omitempty"`
 	ZoneName      string `json:"zonename,omitempty"`
+	Filename      string `json:"filename,omitempty"`
 	Project       string `json:"project,omitempty"`
 	Ttl           int64  `json:"ttl,omitempty"`
 	DeleteEntries bool   `json:"delete_entries,omitempty"`

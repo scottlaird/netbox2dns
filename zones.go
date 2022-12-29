@@ -54,6 +54,7 @@ func (z *Zones) NewZone(cz *ConfigZone) {
 		Name:          cz.Name,
 		ZoneName:      cz.ZoneName,
 		Project:       cz.Project,
+		Filename:      cz.Filename,
 		DeleteEntries: cz.DeleteEntries,
 		Ttl:           cz.Ttl,
 		Records:       make(map[string][]*Record),
@@ -105,6 +106,7 @@ type Zone struct {
 	Name          string
 	ZoneName      string
 	Project       string
+	Filename      string
 	DeleteEntries bool
 	Ttl           int64
 	Records       map[string][]*Record
@@ -148,6 +150,7 @@ func (z *Zone) NewZoneDelta() *ZoneDelta {
 		Name:          z.Name,
 		ZoneName:      z.ZoneName,
 		Project:       z.Project,
+		Filename:      z.Filename,
 		AddRecords:    make(map[string][]*Record),
 		RemoveRecords: make(map[string][]*Record),
 	}
@@ -158,6 +161,7 @@ type ZoneDelta struct {
 	Name          string
 	ZoneName      string
 	Project       string
+	Filename      string
 	AddRecords    map[string][]*Record
 	RemoveRecords map[string][]*Record
 }

@@ -15,6 +15,8 @@ func NewDNSProvider(ctx context.Context, cz *ConfigZone) (DNSProvider, error) {
 	switch cz.ZoneType {
 	case "clouddns":
 		return NewCloudDNS(ctx)
+	case "zonefile":
+		return NewZoneFileDNS(ctx)
 	default:
 		return nil, fmt.Errorf("Unknown DNS provider type %q", cz.ZoneType)
 	}

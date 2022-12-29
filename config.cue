@@ -6,27 +6,25 @@
 // Each field has a type ("string"), optionally a default (*),
 // and some constraints.
 #CloudDNSZone: {
-	zonetype:        *"clouddns" | string
+	zonetype:        "clouddns"
 	name:            string
 	zonename:        string
 	project:         *config.defaults.project | string
 	ttl:             *config.defaults.ttl | int & >60 & <=86400
 	delete_entries?: *false | bool // Remove entries that are missing
+	...
 }
 
-// To add other DNS providers, you'll need to add a similar
-// definition.  For example, #Route53Zone for AWS.  The zonetype, name,
-// ttl, and delete_entries fields are required.  Add any other fields
-// needed to define zones for your provider, similar to `project` and
-// `zonename`.  You will also need to update config.go with any new fields,
-// and then add code for talking to your provider in dns.go and elsewhere.
-// You'll probably want to use clouddns.go as an example.
+#ZoneFileZone: {
+	zonetype:        "zonefile"
+	name:            string
+	filename:        string
+	ttl:             *config.defaults.ttl | int & >60 & <=86400
+	delete_entries?: *false | bool // Remove entries that are missing
+	...
+}
 
-// #Zone should be a union of all supported Zone types.  If you add
-// new providers, then you'll probably need to add something like `|
-// Route53Zone` at the end of the line.
-
-#Zone: #CloudDNSZone
+#Zone: #CloudDNSZone | #ZoneFileZone
 
 // This is the template for the actual configuration.
 config: {
