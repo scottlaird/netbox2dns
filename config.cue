@@ -51,7 +51,6 @@ config: {
 
 	// Defaults.  Notice the `*config.defaults.` clauses above, in #CloudDNSZone.
 	defaults: {
-		zonetype?: *"clouddns" | string
 		ttl:       *300 | int
 		project?:  *"foo" | string
 	}
