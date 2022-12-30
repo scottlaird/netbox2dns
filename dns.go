@@ -69,7 +69,7 @@ func ImportZones(ctx context.Context, cfg *Config) (*Zones, error) {
 func IncrementSerial(cz *ConfigZone, serial uint32) (uint32, error) {
 	today := time.Now().Format("20060102")
 	return incrementSerialFixedDate(cz, serial, today)
-	
+
 }
 func incrementSerialFixedDate(cz *ConfigZone, serial uint32, today string) (uint32, error) {
 	if serial >= 2000_01_01_00 {

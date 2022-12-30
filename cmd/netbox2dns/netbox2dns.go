@@ -7,11 +7,8 @@ import (
 	"fmt"
 	"os"
 
-	httptransport "github.com/go-openapi/runtime/client"
 	log "github.com/golang/glog"
-	"github.com/netbox-community/go-netbox/netbox/client"
 	nb "github.com/scottlaird/netbox2dns"
-	"github.com/scottlaird/netbox2dns/netbox"
 )
 
 var (
@@ -43,6 +40,7 @@ func main() {
 
 	var err error
 
+	// Load config file
 	file := *config
 	if file == "" {
 		file, err = nb.FindConfig("netbox2dns")
@@ -50,56 +48,44 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-
 	cfg, err := nb.ParseConfig(file)
 	if err != nil {
 		log.Fatalf("Failed to parse config: %v")
 	}
-
 	log.Infof("Config read: %+v", cfg)
 
 	ctx := context.Background()
 
+	// Fetch existing DNS zones and entries
 	zones, err := nb.ImportZones(ctx, cfg)
 	if err != nil {
 		log.Fatalf("Unable to import existing zones: %v", err)
 	}
 
-	b, err := json.MarshalIndent(zones, "", "  ")
-	if err != nil {
-		log.Fatalf("Unable to marshal: %v", err)
-	}
+	log.Infof("Found %d zones", len(zones.Zones))
 
-	log.Infof("Found %d zones (%d bytes)", len(zones.Zones), len(b))
-
+	// Create new zones using data from Netbox
 	newZones := nb.NewZones()
 	for _, cz := range cfg.ZoneMap {
 		newZones.NewZone(cz)
 	}
 
-	transport := httptransport.New(cfg.Netbox.Host, client.DefaultBasePath, []string{"https"})
-	transport.DefaultAuthentication = httptransport.APIKeyAuth("Authorization", "header", "Token "+cfg.Netbox.Token)
-	c := client.New(transport, nil)
-
-	addrs, err := netbox.ListIPAddrs(c)
+	addrs, err := nb.GetNetboxIPAddresses(cfg.Netbox.Host, cfg.Netbox.Token)
 	if err != nil {
 		log.Fatalf("Unable to fetch IP Addresses from Netbox: %v", err)
 	}
 
 	fmt.Printf("Found %d IP Addresses in %d zones\n", len(addrs), len(newZones.Zones))
 
+	// Add Netbox IPs to our new zones
 	err = newZones.AddAddrs(addrs)
 	if err != nil {
 		log.Fatalf("Unable to add IP addresses: %v", err)
 	}
 
-	b2, err := json.MarshalIndent(newZones, "", "  ")
-	if err != nil {
-		log.Fatalf("Unable to marshal: %v", err)
-	}
+	log.Infof("Created %d zones", len(newZones.Zones))
 
-	log.Infof("Created %d zones (%d bytes)", len(newZones.Zones), len(b2))
-
+	// Compare imported zones to created zones and produce a diff.
 	zd := zones.Compare(newZones)
 
 	removeCount := 0
