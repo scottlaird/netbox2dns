@@ -19,8 +19,8 @@ var (
 )
 
 func usage() {
-		fmt.Printf("Usage: netbox2dns [--config=FILE] diff|push\n")
-		os.Exit(1)
+	fmt.Printf("Usage: netbox2dns [--config=FILE] diff|push\n")
+	os.Exit(1)
 }
 
 func main() {
@@ -40,7 +40,7 @@ func main() {
 	default:
 		usage()
 	}
-	
+
 	var err error
 
 	file := *config
@@ -106,13 +106,21 @@ func main() {
 	addCount := 0
 
 	for _, zone := range zd {
+		changed := false
+
+		provider, err := nb.NewDNSProvider(ctx, cfg.ZoneMap[zone.Name])
+		if err != nil {
+			log.Fatalf("Failed to create DNS provider for %q: %v", zone.Name, err)
+		}
+
 		for _, rec := range zone.RemoveRecords {
 			for _, rr := range rec {
 				if rr.Type == "A" || rr.Type == "AAAA" || rr.Type == "PTR" {
 					removeCount++
 					fmt.Printf("- %s %s %d %v\n", rr.Name, rr.Type, rr.Ttl, rr.Rrdatas)
 					if push {
-						err := nb.RemoveRecord(ctx, cfg.ZoneMap[zone.Name], rr)
+						err := provider.RemoveRecord(cfg.ZoneMap[zone.Name], rr)
+						changed = true
 						if err != nil {
 							log.Errorf("Failed to remove record: %v", err)
 						}
@@ -125,11 +133,19 @@ func main() {
 				addCount++
 				fmt.Printf("+ %s %s %d %v\n", rr.Name, rr.Type, rr.Ttl, rr.Rrdatas)
 				if push {
-					err = nb.WriteRecord(ctx, cfg.ZoneMap[zone.Name], rr)
+					err = provider.WriteRecord(cfg.ZoneMap[zone.Name], rr)
+					changed = true
 					if err != nil {
 						log.Errorf("Failed to update record: %v", err)
 					}
 				}
+			}
+		}
+
+		if changed {
+			err := provider.Save(cfg.ZoneMap[zone.Name])
+			if err != nil {
+				log.Fatalf("Failed to save: %v", err)
 			}
 		}
 	}

@@ -8,11 +8,15 @@ import (
 	//log "github.com/golang/glog"
 )
 
+// TODO: starting using dns.Changes to bundle up multiple changes into
+// a single transaction.  This should substantailly improve
+// performance when making multiple changes at once.
+
 type CloudDNS struct {
 	rrss *dns.ResourceRecordSetsService
 }
 
-func NewCloudDNS(ctx context.Context) (*CloudDNS, error) {
+func NewCloudDNS(ctx context.Context, cz *ConfigZone) (*CloudDNS, error) {
 	cd := &CloudDNS{}
 
 	dnsService, err := dns.NewService(ctx)
@@ -66,5 +70,9 @@ func (cd *CloudDNS) WriteRecord(cz *ConfigZone, r *Record) error {
 
 func (cd *CloudDNS) RemoveRecord(cz *ConfigZone, r *Record) error {
 	fmt.Printf("(should) remove %s %s %d %v\n", r.Name, r.Type, r.Ttl, r.Rrdatas)
+	return nil
+}
+
+func (cd *CloudDNS) Save(cz *ConfigZone) error {
 	return nil
 }

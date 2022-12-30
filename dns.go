@@ -9,14 +9,15 @@ type DNSProvider interface {
 	ImportZone(cz *ConfigZone) (*Zone, error)
 	WriteRecord(cz *ConfigZone, r *Record) error
 	RemoveRecord(cz *ConfigZone, r *Record) error
+	Save(cz *ConfigZone) error
 }
 
 func NewDNSProvider(ctx context.Context, cz *ConfigZone) (DNSProvider, error) {
 	switch cz.ZoneType {
 	case "clouddns":
-		return NewCloudDNS(ctx)
+		return NewCloudDNS(ctx, cz)
 	case "zonefile":
-		return NewZoneFileDNS(ctx)
+		return NewZoneFileDNS(ctx, cz)
 	default:
 		return nil, fmt.Errorf("Unknown DNS provider type %q", cz.ZoneType)
 	}
@@ -40,6 +41,8 @@ func ImportZones(ctx context.Context, cfg *Config) (*Zones, error) {
 	return zones, nil
 }
 
+/*
+
 // WriteRecord adds a single new record to the DNS provider.  We
 // explicitly don't write entire zones, as they contain RRs that
 // Netbox doesn't natively model (SOA and NS at a minimum).
@@ -61,3 +64,4 @@ func RemoveRecord(ctx context.Context, cz *ConfigZone, r *Record) error {
 	}
 	return provider.RemoveRecord(cz, r)
 }
+*/
