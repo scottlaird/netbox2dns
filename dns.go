@@ -72,7 +72,7 @@ func IncrementSerial(cz *ConfigZone, serial uint32) (uint32, error) {
 	
 }
 func incrementSerialFixedDate(cz *ConfigZone, serial uint32, today string) (uint32, error) {
-	if serial > 2000_01_01_00 {
+	if serial >= 2000_01_01_00 {
 		log.Infof("Using date-based serial number for zone %q", cz.Name)
 		// Using YYYYMMDDxx serial numbers, probably.
 		today := time.Now().Format("20060102")
