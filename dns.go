@@ -10,6 +10,7 @@ import (
 	log "github.com/golang/glog"
 )
 
+// DNSProvider is an interface to a DNS provider backend, such a CloudDNS or ZoneFile.
 type DNSProvider interface {
 	ImportZone(cz *ConfigZone) (*Zone, error)
 	WriteRecord(cz *ConfigZone, r *Record) error
@@ -17,6 +18,7 @@ type DNSProvider interface {
 	Save(cz *ConfigZone) error
 }
 
+// NewDNSProvider creates a provider of the correct type for the described zone.
 func NewDNSProvider(ctx context.Context, cz *ConfigZone) (DNSProvider, error) {
 	switch cz.ZoneType {
 	case "clouddns":
@@ -28,6 +30,8 @@ func NewDNSProvider(ctx context.Context, cz *ConfigZone) (DNSProvider, error) {
 	}
 }
 
+// ImportZones creates new DNS providers for each zone and imports all
+// existing records for each zone.
 func ImportZones(ctx context.Context, cfg *Config) (*Zones, error) {
 	zones := NewZones()
 
@@ -46,8 +50,8 @@ func ImportZones(ctx context.Context, cfg *Config) (*Zones, error) {
 	return zones, nil
 }
 
-// function IncrementSerial increments the serial number on a DNS
-// zone.  This recognizes 2 basic serial number patterns:
+// IncrementSerial increments the serial number on a DNS zone.  This
+// recognizes 2 basic serial number patterns:
 //
 // 1.  Simple incrememnting integers (1 -> 2 -> 3, etc)
 // 2.  Date-based serial numbers (2022123004 -> 2022123005 -> 2022123100)

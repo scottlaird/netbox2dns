@@ -13,15 +13,15 @@ import (
 
 	log "github.com/golang/glog"
 
-	_ "embed"
+	_ "embed" // Needed to embed config.cue
 )
 
-// type ConfigRoot matches the root of the schema defined in `config.cue`.
+// ConfigRoot matches the root of the schema defined in `config.cue`.
 type ConfigRoot struct {
 	Config Config `json:"config,omitempty"`
 }
 
-// type Config matches the `config` item in the schema defined in
+// Config matches the `config` item in the schema defined in
 // `config.cue`.  Each item must be marked as `notempty` and must have
 // a JSON tag that matches the name in the CUE file.
 type Config struct {
@@ -31,14 +31,14 @@ type Config struct {
 	} `json:"netbox,omitempty"`
 	Defaults struct {
 		Zonetype string `json:"zonetype,omitempty"`
-		Ttl      int64  `json:"ttl,omitempty"`
+		TTL      int64  `json:"ttl,omitempty"`
 		Project  string `json:"project,omitempty"`
 	} `json:"defaults,omitempty"`
 	ZoneMap map[string]*ConfigZone `json:"zonemap,omitempty"`
 	Zones   []*ConfigZone          `json:"zones,omitempty"`
 }
 
-// type ConfigZone matches `Zone` in `config.cue`.  This needs to be
+// ConfigZone matches `Zone` in `config.cue`.  This needs to be
 // the union of all defined zone types.  At the moment, this is only
 // CloudDNSZone, but other types are possible.  They're switched based
 // on the `ZoneType` field.  Then, code in `dns.go` uses that to
@@ -49,7 +49,7 @@ type ConfigZone struct {
 	ZoneName      string `json:"zonename,omitempty"`
 	Filename      string `json:"filename,omitempty"`
 	Project       string `json:"project,omitempty"`
-	Ttl           int64  `json:"ttl,omitempty"`
+	TTL           int64  `json:"ttl,omitempty"`
 	DeleteEntries bool   `json:"delete_entries,omitempty"`
 }
 
@@ -74,8 +74,8 @@ var configExtensions = []string{
 	"cue",
 }
 
-// function FindConfig looks in several locations for a config file
-// named "$basename.yml", "$basename.yaml", "$basename.json", or
+// FindConfig looks in several locations for a config file named
+// "$basename.yml", "$basename.yaml", "$basename.json", or
 // "$basename.cue".
 func FindConfig(basename string) (string, error) {
 	return findConfig(basename, configDirs, configExtensions)
@@ -94,7 +94,7 @@ func findConfig(basename string, configDirs []string, configExtensions []string)
 	return "", fmt.Errorf("Config file %q not found in %+v with extension %+v", basename, configDirs, configExtensions)
 }
 
-// function ParseConfig parses a config file and returns a Config
+// ParseConfig parses a config file and returns a Config
 // object or an error.  When used with FindConfig, it can hunt down a
 // config file in several formats and then parse and validate it
 // automatically.

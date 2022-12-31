@@ -7,12 +7,15 @@ import (
 	"github.com/shuLhan/share/lib/dns"
 )
 
+// ZoneFileDNS provides an implementation of DNS using traditional
+// BIND-style zone files.
 type ZoneFileDNS struct {
 	zone *dns.Zone
 }
 
+// NewZoneFileDNS creates a new ZoneFileDNS object.
 func NewZoneFileDNS(ctx context.Context, cz *ConfigZone) (*ZoneFileDNS, error) {
-	zone, err := dns.ParseZoneFile(cz.Filename, cz.Name, uint32(cz.Ttl))
+	zone, err := dns.ParseZoneFile(cz.Filename, cz.Name, uint32(cz.TTL))
 	if err != nil {
 		return nil, err
 	}
@@ -24,11 +27,14 @@ func NewZoneFileDNS(ctx context.Context, cz *ConfigZone) (*ZoneFileDNS, error) {
 	return zfd, nil
 }
 
+// ImportZone reads DNS entries from a zone file on disk (as specified
+// as part of the zone config in the netbox2dns config file) and
+// populates the ZoneFileDNS with them.
 func (zfd *ZoneFileDNS) ImportZone(cz *ConfigZone) (*Zone, error) {
 	zone := &Zone{
 		Name:          cz.Name,
 		Filename:      cz.Filename,
-		Ttl:           cz.Ttl,
+		TTL:           cz.TTL,
 		DeleteEntries: cz.DeleteEntries,
 		Records:       make(map[string][]*Record),
 	}
@@ -38,7 +44,7 @@ func (zfd *ZoneFileDNS) ImportZone(cz *ConfigZone) (*Zone, error) {
 			r := Record{
 				Name: strings.TrimRight(entry.Name, ".") + ".",
 				Type: dns.RecordTypeNames[entry.Type],
-				Ttl:  int64(entry.TTL),
+				TTL:  int64(entry.TTL),
 			}
 
 			s := entry.Value.(string)
@@ -54,16 +60,19 @@ func (zfd *ZoneFileDNS) ImportZone(cz *ConfigZone) (*Zone, error) {
 	return zone, nil
 }
 
+// rrFromRecord creates a DNS ResourceRecord from a netbox2dns Record.
 func (zfd *ZoneFileDNS) rrFromRecord(cz *ConfigZone, r *Record) *dns.ResourceRecord {
 	return &dns.ResourceRecord{
 		Name:  r.NameNoDot(),
 		Type:  dns.RecordTypes[r.Type],
 		Class: dns.RecordClassIN,
-		TTL:   uint32(r.Ttl),
+		TTL:   uint32(r.TTL),
 		Value: r.RrdataNoDot(),
 	}
 }
 
+// WriteRecord writes a Record to the zonefile behind the ZoneFileDNS.
+// Note that this won't actually be written until 'Save()' is called.
 func (zfd *ZoneFileDNS) WriteRecord(cz *ConfigZone, r *Record) error {
 	entry := zfd.rrFromRecord(cz, r)
 
@@ -75,6 +84,8 @@ func (zfd *ZoneFileDNS) WriteRecord(cz *ConfigZone, r *Record) error {
 	return nil
 }
 
+// RemoveRecord removes a Record from the zonefile behind the ZoneFileDNS.
+// Note that this won't actually be written until 'Save()' is called.
 func (zfd *ZoneFileDNS) RemoveRecord(cz *ConfigZone, r *Record) error {
 	entry := zfd.rrFromRecord(cz, r)
 
@@ -85,6 +96,8 @@ func (zfd *ZoneFileDNS) RemoveRecord(cz *ConfigZone, r *Record) error {
 	return nil
 }
 
+// Save flushes the current zonefile to disk.  Without this, no
+// changes will be written out.
 func (zfd *ZoneFileDNS) Save(cz *ConfigZone) error {
 	newserial, err := IncrementSerial(cz, zfd.zone.SOA.Serial)
 	if err != nil {

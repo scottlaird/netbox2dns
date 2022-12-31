@@ -50,20 +50,20 @@ func TestFindConfig(t *testing.T) {
 
 func TestParseYaml(t *testing.T) {
 	cfg, err := ParseConfig("testdata/config4/conf.yaml")
-	value_test(t, cfg, err)
+	valueTest(t, cfg, err)
 }
 
 func TestParseJSON(t *testing.T) {
 	cfg, err := ParseConfig("testdata/config4/conf.json")
-	value_test(t, cfg, err)
+	valueTest(t, cfg, err)
 }
 
 func TestParseCUE(t *testing.T) {
 	cfg, err := ParseConfig("testdata/config4/conf.json")
-	value_test(t, cfg, err)
+	valueTest(t, cfg, err)
 }
 
-func value_test(t *testing.T, cfg *Config, err error) {
+func valueTest(t *testing.T, cfg *Config, err error) {
 	if err != nil {
 		t.Fatalf("Unable to parse config: %v", err)
 	}
@@ -96,8 +96,8 @@ func value_test(t *testing.T, cfg *Config, err error) {
 	if z.ZoneName != "reverse-v6-0000" {
 		t.Errorf("z.ZoneName wrong; got %q want %q", z.ZoneName, "reverse-6-0000")
 	}
-	if z.Ttl != 300 {
-		t.Errorf("z.Ttl wrong; got %d want 300", z.Ttl)
+	if z.TTL != 300 {
+		t.Errorf("z.TTL wrong; got %d want 300", z.TTL)
 	}
 	if z.Project != "random-string" {
 		t.Errorf("z.Project wrong; got %q want %q", z.Project, "random-string")

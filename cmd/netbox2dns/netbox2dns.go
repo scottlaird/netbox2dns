@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -103,7 +102,7 @@ func main() {
 			for _, rr := range rec {
 				if rr.Type == "A" || rr.Type == "AAAA" || rr.Type == "PTR" {
 					removeCount++
-					fmt.Printf("- %s %s %d %v\n", rr.Name, rr.Type, rr.Ttl, rr.Rrdatas)
+					fmt.Printf("- %s %s %d %v\n", rr.Name, rr.Type, rr.TTL, rr.Rrdatas)
 					if push {
 						err := provider.RemoveRecord(cfg.ZoneMap[zone.Name], rr)
 						changed = true
@@ -117,7 +116,7 @@ func main() {
 		for _, rec := range zone.AddRecords {
 			for _, rr := range rec {
 				addCount++
-				fmt.Printf("+ %s %s %d %v\n", rr.Name, rr.Type, rr.Ttl, rr.Rrdatas)
+				fmt.Printf("+ %s %s %d %v\n", rr.Name, rr.Type, rr.TTL, rr.Rrdatas)
 				if push {
 					err = provider.WriteRecord(cfg.ZoneMap[zone.Name], rr)
 					changed = true

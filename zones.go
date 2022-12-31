@@ -2,14 +2,15 @@ package netbox2dns
 
 import (
 	"fmt"
-	log "github.com/golang/glog"
-	"github.com/scottlaird/netbox2dns/netbox"
 	"net/netip"
 	"sort"
 	"strings"
+
+	log "github.com/golang/glog"
+	"github.com/scottlaird/netbox2dns/netbox"
 )
 
-// Type ByLength is a wrapper for []string for sorting the string
+// ByLength is a wrapper for []string for sorting the string
 // slice by length, from longest to shortest.
 type ByLength []*Zone
 
@@ -23,17 +24,22 @@ func (a ByLength) Swap(i, j int) {
 	a[i], a[j] = a[j], a[i]
 }
 
+// Zones represents the set of all DNS zones known to netbox2dns.
 type Zones struct {
 	Zones       map[string]*Zone
 	sortedZones []*Zone
 }
 
+// NewZones creates a new Zones structure and initializes it.
 func NewZones() *Zones {
 	return &Zones{
 		Zones: make(map[string]*Zone),
 	}
 }
 
+// AddRecord adds a record to the appropriate zone.  It finds the
+// longest suffix match among all known zones and adds the new record
+// there.  If no zones match, then an error is returned.
 func (z *Zones) AddRecord(r *Record) error {
 	for _, zone := range z.sortedZones {
 		if strings.HasSuffix(r.Name, zone.Name+".") {
@@ -44,11 +50,15 @@ func (z *Zones) AddRecord(r *Record) error {
 	return fmt.Errorf("Can't find zone matching record %q in %v", r.Name, z.sortedZones)
 }
 
+// AddZone adds a new Zone to Zones.
 func (z *Zones) AddZone(zone *Zone) {
 	z.Zones[zone.Name] = zone
 	z.sortZones()
 }
 
+// NewZone creates a new Zone in Zones using the settings in the
+// provided ConfigZone.  The resulting Zone is added to Zones
+// automatically.
 func (z *Zones) NewZone(cz *ConfigZone) {
 	zone := Zone{
 		Name:          cz.Name,
@@ -56,12 +66,13 @@ func (z *Zones) NewZone(cz *ConfigZone) {
 		Project:       cz.Project,
 		Filename:      cz.Filename,
 		DeleteEntries: cz.DeleteEntries,
-		Ttl:           cz.Ttl,
+		TTL:           cz.TTL,
 		Records:       make(map[string][]*Record),
 	}
 	z.AddZone(&zone)
 }
 
+// sortZones sorts zones from longest to shortest and populates `sortedZones`.
 func (z *Zones) sortZones() {
 	zones := make([]*Zone, len(z.Zones))
 	i := 0
@@ -74,6 +85,8 @@ func (z *Zones) sortZones() {
 	z.sortedZones = zones
 }
 
+// Compare compares two Zones structures and returns a slice of
+// ZoneDeltas showing what has changed.
 func (z *Zones) Compare(newer *Zones) []*ZoneDelta {
 	zones := make(map[string]bool)
 	deltas := []*ZoneDelta{}
@@ -102,23 +115,29 @@ func (z *Zones) Compare(newer *Zones) []*ZoneDelta {
 	return deltas
 }
 
+// Zone represents a single DNS zone on a single provider (Google
+// Cloud DNS, fixed zone files, etc).
 type Zone struct {
 	Name          string
 	ZoneName      string
 	Project       string
 	Filename      string
 	DeleteEntries bool
-	Ttl           int64
+	TTL           int64
 	Records       map[string][]*Record
 }
 
+// AddRecord adds a single record to this zone.  It does not check
+// that this is the correct zone for the record.
 func (z *Zone) AddRecord(r *Record) {
-	if r.Ttl == 0 {
-		r.Ttl = z.Ttl
+	if r.TTL == 0 {
+		r.TTL = z.TTL
 	}
 	z.Records[r.Name] = append(z.Records[r.Name], r)
 }
 
+// Compare compares two Zone structures and updates a ZoneDelta with
+// changes.
 func (z *Zone) Compare(newer *Zone, zd *ZoneDelta) {
 	records := make(map[string]bool)
 
@@ -145,6 +164,8 @@ func (z *Zone) Compare(newer *Zone, zd *ZoneDelta) {
 	}
 }
 
+// NewZoneDelta creates a new ZoneDelta.  This is used to track
+// changes between versions of a DNS zone.
 func (z *Zone) NewZoneDelta() *ZoneDelta {
 	zd := &ZoneDelta{
 		Name:          z.Name,
@@ -157,6 +178,8 @@ func (z *Zone) NewZoneDelta() *ZoneDelta {
 	return zd
 }
 
+// ZoneDelta describes the difference between two versions of the same
+// zone.  It shows added and removed records.
 type ZoneDelta struct {
 	Name          string
 	ZoneName      string
@@ -166,6 +189,8 @@ type ZoneDelta struct {
 	RemoveRecords map[string][]*Record
 }
 
+// CompareRecordSets compares sets of records and updates a ZoneDelta
+// with results.
 func CompareRecordSets(older []*Record, newer []*Record, zd *ZoneDelta) {
 	// So, let's start by looking for identical Records.
 
@@ -207,6 +232,9 @@ func CompareRecordSets(older []*Record, newer []*Record, zd *ZoneDelta) {
 	}
 }
 
+// ReverseName takes an IP address and returns the correct reverse DNS
+// name for that IP.  It maps IPv4 addresses into `in-addr.arpa` and
+// IPv6 addresses into `ip6.arpa`.
 func ReverseName(addr netip.Addr) string {
 	if addr.Is4() {
 		return reverseName4(addr)
@@ -223,11 +251,13 @@ func reverseName6(addr netip.Addr) string {
 	ret := ""
 	b := addr.As16()
 	for i := 15; i >= 0; i-- {
-		ret = ret + fmt.Sprintf("%x.%x.", b[i]&0xf, (b[i]&0xf0)>>4)
+		ret += fmt.Sprintf("%x.%x.", b[i]&0xf, (b[i]&0xf0)>>4)
 	}
 	return ret + "ip6.arpa."
 }
 
+// AddAddrs adds multiple addresses to a set of Zones.  This creates
+// both forward and reverse DNS entries.
 func (z *Zones) AddAddrs(addrs netbox.IPAddrs) error {
 	for _, addr := range addrs {
 		if addr.DNSName != "" && addr.Status == "active" {

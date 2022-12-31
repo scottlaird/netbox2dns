@@ -5,17 +5,20 @@ import (
 	"fmt"
 
 	"google.golang.org/api/dns/v1"
-	//log "github.com/golang/glog"
 )
 
 // TODO: starting using dns.Changes to bundle up multiple changes into
 // a single transaction.  This should substantailly improve
 // performance when making multiple changes at once.
 
+// CloudDNS implements talking to Google Cloud DNS, and provides
+// methods for fetching existing DNS entries, adding new entries, or
+// deleting old entries.
 type CloudDNS struct {
 	rrss *dns.ResourceRecordSetsService
 }
 
+// NewCloudDNS creates a new CloudDNS.
 func NewCloudDNS(ctx context.Context, cz *ConfigZone) (*CloudDNS, error) {
 	cd := &CloudDNS{}
 
@@ -28,12 +31,13 @@ func NewCloudDNS(ctx context.Context, cz *ConfigZone) (*CloudDNS, error) {
 	return cd, nil
 }
 
+// ImportZone imports all entries from the specified Google Cloud DNS zone.
 func (cd *CloudDNS) ImportZone(cfg *ConfigZone) (*Zone, error) {
 	zone := &Zone{
 		Name:          cfg.Name,
 		ZoneName:      cfg.ZoneName,
 		Project:       cfg.Project,
-		Ttl:           cfg.Ttl,
+		TTL:           cfg.TTL,
 		DeleteEntries: cfg.DeleteEntries,
 		Records:       make(map[string][]*Record),
 	}
@@ -48,7 +52,7 @@ func (cd *CloudDNS) ImportZone(cfg *ConfigZone) (*Zone, error) {
 		rr := Record{
 			Name:    r.Name,
 			Type:    r.Type,
-			Ttl:     r.Ttl,
+			TTL:     r.Ttl,
 			Rrdatas: r.Rrdatas,
 		}
 		zone.AddRecord(&rr)
@@ -57,22 +61,28 @@ func (cd *CloudDNS) ImportZone(cfg *ConfigZone) (*Zone, error) {
 	return zone, nil
 }
 
+// WriteRecord adds a record to Google Cloud DNS.
 func (cd *CloudDNS) WriteRecord(cz *ConfigZone, r *Record) error {
 	c := cd.rrss.Create(cz.Project, cz.ZoneName, &dns.ResourceRecordSet{
 		Name:    r.Name,
 		Type:    r.Type,
-		Ttl:     r.Ttl,
+		Ttl:     r.TTL,
 		Rrdatas: r.Rrdatas,
 	})
 	_, err := c.Do()
 	return err
 }
 
+// RemoveRecord removes a DNS entry from Google Cloud DNS.
+//
+// TODO: implement
 func (cd *CloudDNS) RemoveRecord(cz *ConfigZone, r *Record) error {
-	fmt.Printf("(should) remove %s %s %d %v\n", r.Name, r.Type, r.Ttl, r.Rrdatas)
+	fmt.Printf("(should) remove %s %s %d %v\n", r.Name, r.Type, r.TTL, r.Rrdatas)
 	return nil
 }
 
+// Save flushes changes to Cloud DNS.  This is a no-op at the moment,
+// but we'll eventually batch queries together for performance.
 func (cd *CloudDNS) Save(cz *ConfigZone) error {
 	return nil
 }

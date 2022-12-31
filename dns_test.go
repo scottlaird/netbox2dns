@@ -12,8 +12,8 @@ func TestIncrementSerial(t *testing.T) {
 	tests := []serials{
 		{1, 2},
 		{2, 3},
-		//{2000010099, 2000010100},  // Expected, but implementation-defined
-		//{2000010100, 2022123000},  // Expected, but implementation-defined
+		// {2000010099, 2000010100},  // Expected, but implementation-defined
+		// {2000010100, 2022123000},  // Expected, but implementation-defined
 		{2022122904, 2022123000},
 		{2022123005, 2022123006},
 		{2022123099, 2022123100},
