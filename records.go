@@ -1,7 +1,6 @@
 package netbox2dns
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -11,26 +10,6 @@ type Record struct {
 	Type    string
 	TTL     int64
 	Rrdatas []string
-}
-
-// Compare compares two Records and prints a difference.
-//
-// TODO: is this used still?
-func (r *Record) Compare(newer *Record) string {
-	// Not comparing 'Name', because it's a key in Zone.Record, so
-	// we shouldn't ever be called with mismatches.
-
-	if r.Type != newer.Type {
-		fmt.Printf("*** %s: Changed type from %q to %q\n", r.Name, r.Type, newer.Type)
-	}
-	if r.TTL != newer.TTL {
-		fmt.Printf("*** %s: Changed ttl from %d to %d\n", r.Name, r.TTL, newer.TTL)
-	}
-	if r.Rrdatas[0] != newer.Rrdatas[0] {
-		fmt.Printf("*** %s: Changed ttl from %v to %v\n", r.Name, r.Rrdatas, newer.Rrdatas)
-	}
-
-	return ""
 }
 
 // NameNoDot returns the name of a record with no trailing dot.
