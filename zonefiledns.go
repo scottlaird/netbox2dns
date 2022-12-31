@@ -48,9 +48,6 @@ func (zfd *ZoneFileDNS) ImportZone(cz *ConfigZone) (*Zone, error) {
 			}
 
 			s := entry.Value.(string)
-			if entry.Type == dns.RecordTypePTR {
-				// TODO verify trailing .
-			}
 			r.Rrdatas = []string{strings.TrimRight(s, ".") + "."}
 
 			zone.AddRecord(&r)
