@@ -33,16 +33,25 @@ config:
   
   zones: 
     - name: "internal.example.com"
+      zonetype: "clouddns"
       zonename: "internal-example-com"
     - name: "example.com"
-      zonename: "example-com"
+      zonetype: "zonefile"
+      filename: "/etc/dns/example.com.zone"
     - name: "10.in-addr.arpa"
+      zonetype: "clouddns"
       zonename: "reverse-v4-10"
       delete_entries: true
     - name: "0.0.0.0.ip6.arpa"
+      zonetype: "clouddns"
       zonename: "reverse-v6-0000"
       delete_entries: true
 ```
+
+Each zone needs to specify a name and a zonetype.  Currently supported
+zonetypes are `clouddns` for Google Cloud DNS and `zonefile` for text
+zone files.  See `config.cue` for an authoratative list of parameters
+per zone.
 
 To talk to Netbox, you'll need to provide your Netbox host, a Netbox
 API token with (at a minimum) read access to Netbox's IP Address data.
@@ -71,8 +80,9 @@ are available.
 
 ## Use
 
-Short version: run `netbox2dns diff`, followed by `netbox2dns push` if
-the diff looks acceptable.
+Short version: create a configuration file (see previous section),
+then run `netbox2dns diff`, followed by `netbox2dns push` if the diff
+looks acceptable.
 
 Upon startup, netbox2dns will fetch all IP Address records from Netbox
 *and* all A/AAAA/PTR records from the listed zones.  netbox2dns
