@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	log "github.com/golang/glog"
-	"github.com/scottlaird/netbox2dns/netbox"
+	"github.com/scottlaird/netboxlib/netbox"
 )
 
 // ByLength is a wrapper for []string for sorting the string

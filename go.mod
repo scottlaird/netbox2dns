@@ -7,6 +7,7 @@ require (
 	github.com/go-openapi/runtime v0.25.0
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/netbox-community/go-netbox v0.0.0-20221114202533-18aea9a4ac2c
+	github.com/scottlaird/netboxlib v0.0.0-20230204003503-6686054e337e
 	github.com/shuLhan/share v0.42.0
 	google.golang.org/api v0.105.0
 )

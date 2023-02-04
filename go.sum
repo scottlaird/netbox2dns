@@ -176,6 +176,8 @@ github.com/rogpeppe/go-internal v1.1.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFR
 github.com/rogpeppe/go-internal v1.2.2/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/rogpeppe/go-internal v1.8.1 h1:geMPLpDpQOgVyCg5z5GoRwLHepNdb71NXb67XFkP+Eg=
+github.com/scottlaird/netboxlib v0.0.0-20230204003503-6686054e337e h1:G2nHPEVxYmaXn5cbjSEOYCZTuhFwOMPp8VgBWZCO0nQ=
+github.com/scottlaird/netboxlib v0.0.0-20230204003503-6686054e337e/go.mod h1:SQTTSBU/exMaWcoLQwtl7oLXLqJZ3+9FBYQZniIbATo=
 github.com/shuLhan/share v0.42.0 h1:+CLFpWAniqANqp8LEXnQ3l2LqghU2HtpHBEips5NFQk=
 github.com/shuLhan/share v0.42.0/go.mod h1:nus6RSASS+5P1ZUe89ciJZyp3v+IY1xqLdKwtnuGsaA=
 github.com/sirupsen/logrus v1.4.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=

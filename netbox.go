@@ -3,7 +3,7 @@ package netbox2dns
 import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/netbox-community/go-netbox/netbox/client"
-	"github.com/scottlaird/netbox2dns/netbox"
+	"github.com/scottlaird/netboxlib/netbox"
 )
 
 // GetNetboxIPAddresses fetches a list of IP Addresses from a Netbox server.
