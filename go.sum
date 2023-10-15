@@ -162,8 +162,8 @@ github.com/mitchellh/mapstructure v1.5.0/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RR
 github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe/go.mod h1:wL8QJuTMNUDYhXwkmfOly8iTdp5TEcJFWZD2D7SIkUc=
 github.com/mpvl/unique v0.0.0-20150818121801-cbe035fff7de h1:D5x39vF5KCwKQaw+OC9ZPiLVHXz3UFw2+psEX+gYcto=
 github.com/mpvl/unique v0.0.0-20150818121801-cbe035fff7de/go.mod h1:kJun4WP5gFuHZgRjZUWWuH1DTxCtxbHDOIJsudS8jzY=
-github.com/netbox-community/go-netbox v0.0.0-20221114202533-18aea9a4ac2c h1:+wb7xGJa4DJHeBqJMU1I/VgkXe+PVWCKWTkyR0lLupc=
-github.com/netbox-community/go-netbox v0.0.0-20221114202533-18aea9a4ac2c/go.mod h1:YNqM06B4hY90Q7fxua5aqCxG/qtDvXASbkfecZCzMrc=
+github.com/netbox-community/go-netbox/v3 v3.4.5 h1:uuWq9IA6Br5pzH7wWYgQ8Gc80Wr2EpyOxEx/2A1VbIU=
+github.com/netbox-community/go-netbox/v3 v3.4.5/go.mod h1:c8uBlaxXDA4GxwuW5ZBWHS7dGOFdxdF3I74ylJgjP+E=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
 github.com/oklog/ulid v1.3.1 h1:EGfNDEx6MqHz8B3uNV6QAib1UR2Lm97sHi3ocA6ESJ4=
 github.com/oklog/ulid v1.3.1/go.mod h1:CirwcVhetQ6Lv90oh/F+FBtV6XMibvdAFo93nm5qn4U=
@@ -182,8 +182,8 @@ github.com/rogpeppe/go-internal v1.1.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFR
 github.com/rogpeppe/go-internal v1.2.2/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/rogpeppe/go-internal v1.8.1 h1:geMPLpDpQOgVyCg5z5GoRwLHepNdb71NXb67XFkP+Eg=
-github.com/scottlaird/netboxlib v0.0.0-20230204003503-6686054e337e h1:G2nHPEVxYmaXn5cbjSEOYCZTuhFwOMPp8VgBWZCO0nQ=
-github.com/scottlaird/netboxlib v0.0.0-20230204003503-6686054e337e/go.mod h1:SQTTSBU/exMaWcoLQwtl7oLXLqJZ3+9FBYQZniIbATo=
+github.com/scottlaird/netboxlib v0.0.0-20231015160834-2f320eeb914f h1:U/6ZYtWVmVgQ4E6UCO3YL0owFNpBjNkmD0UiiedhaHs=
+github.com/scottlaird/netboxlib v0.0.0-20231015160834-2f320eeb914f/go.mod h1:7Xwa7EHtoNBEI9Efu5fAa1mWh+naPE6njJvdhurR6Yk=
 github.com/shuLhan/share v0.43.0 h1:WEaMg7WIX6YAvDphQjbPSZqz/ubuotRtD7Fq4zGO8Wc=
 github.com/shuLhan/share v0.43.0/go.mod h1:nus6RSASS+5P1ZUe89ciJZyp3v+IY1xqLdKwtnuGsaA=
 github.com/sirupsen/logrus v1.4.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=

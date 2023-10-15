@@ -2,12 +2,14 @@ module github.com/scottlaird/netbox2dns
 
 go 1.18
 
+//replace github.com/scottlaird/netboxlib => ../netboxlib
+
 require (
 	cuelang.org/go v0.4.3
 	github.com/go-openapi/runtime v0.25.0
 	github.com/golang/glog v1.0.0
-	github.com/netbox-community/go-netbox v0.0.0-20221114202533-18aea9a4ac2c
-	github.com/scottlaird/netboxlib v0.0.0-20230204003503-6686054e337e
+	github.com/netbox-community/go-netbox/v3 v3.4.5
+	github.com/scottlaird/netboxlib v0.0.0-20231015160834-2f320eeb914f
 	github.com/shuLhan/share v0.43.0
 	google.golang.org/api v0.110.0
 )

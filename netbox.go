@@ -2,7 +2,7 @@ package netbox2dns
 
 import (
 	httptransport "github.com/go-openapi/runtime/client"
-	"github.com/netbox-community/go-netbox/netbox/client"
+	"github.com/netbox-community/go-netbox/v3/netbox/client"
 	"github.com/scottlaird/netboxlib/netbox"
 )
 
