@@ -49,7 +49,7 @@ func main() {
 	}
 	cfg, err := nb.ParseConfig(file)
 	if err != nil {
-		log.Fatalf("Failed to parse config: %v")
+		log.Fatalf("Failed to parse config: %v", err)
 	}
 	log.Infof("Config read: %+v", cfg)
 
