@@ -128,7 +128,7 @@ func ParseConfig(filename string) (*Config, error) {
 	// Apply the schema to the results of the parsed YAML file.
 	// This is basically equivalent to 'cue eval config.cue
 	// config.yaml'.
-	codec := gocodec.New((*cue.Runtime)(cctx), nil)
+	codec := gocodec.New(cctx, nil)
 	err := codec.Complete(schema, config)
 	if err != nil {
 		return nil, err
@@ -145,9 +145,7 @@ func parseYAML(filename string, cfg *ConfigRoot, cctx *cue.Context) error {
 		return err
 	}
 	yamlValue := cctx.BuildFile(yamlAST)
-	yamlValue.Decode(cfg)
-
-	return nil
+	return yamlValue.Decode(cfg)
 }
 
 // parseJSON parses a JSON file into a ConfigRoot.
@@ -163,9 +161,7 @@ func parseJSON(filename string, cfg *ConfigRoot, cctx *cue.Context) error {
 		return err
 	}
 	jsonValue := cctx.BuildExpr(jsonAST)
-	jsonValue.Decode(cfg)
-
-	return nil
+	return jsonValue.Decode(cfg)
 }
 
 // parseCUE parses a .cue-format config file into a ConfigRoot
@@ -175,7 +171,5 @@ func parseCUE(filename string, cfg *ConfigRoot, cctx *cue.Context) error {
 		return err
 	}
 	config := cctx.CompileBytes(b)
-	config.Decode(cfg)
-
-	return nil
+	return config.Decode(cfg)
 }
