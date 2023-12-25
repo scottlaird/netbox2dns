@@ -9,7 +9,7 @@ require (
 	github.com/go-openapi/runtime v0.25.0
 	github.com/golang/glog v1.1.2
 	github.com/netbox-community/go-netbox/v3 v3.4.5
-	github.com/scottlaird/netboxlib v0.0.0-20231015160834-2f320eeb914f
+	github.com/scottlaird/netboxlib v1.0.0
 	github.com/shuLhan/share v0.43.0
 	google.golang.org/api v0.154.0
 )
