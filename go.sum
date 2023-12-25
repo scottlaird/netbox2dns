@@ -188,8 +188,8 @@ github.com/rogpeppe/go-internal v1.1.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFR
 github.com/rogpeppe/go-internal v1.2.2/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/rogpeppe/go-internal v1.11.1-0.20231026093722-fa6a31e0812c h1:fPpdjePK1atuOg28PXfNSqgwf9I/qD1Hlo39JFwKBXk=
-github.com/scottlaird/netboxlib v0.0.0-20231015160834-2f320eeb914f h1:U/6ZYtWVmVgQ4E6UCO3YL0owFNpBjNkmD0UiiedhaHs=
-github.com/scottlaird/netboxlib v0.0.0-20231015160834-2f320eeb914f/go.mod h1:7Xwa7EHtoNBEI9Efu5fAa1mWh+naPE6njJvdhurR6Yk=
+github.com/scottlaird/netboxlib v1.0.0 h1:t9kxciDgvVh5FHcQWc1RGonIk4esvOQt4mZONnxutKc=
+github.com/scottlaird/netboxlib v1.0.0/go.mod h1:7Xwa7EHtoNBEI9Efu5fAa1mWh+naPE6njJvdhurR6Yk=
 github.com/shuLhan/share v0.43.0 h1:WEaMg7WIX6YAvDphQjbPSZqz/ubuotRtD7Fq4zGO8Wc=
 github.com/shuLhan/share v0.43.0/go.mod h1:nus6RSASS+5P1ZUe89ciJZyp3v+IY1xqLdKwtnuGsaA=
 github.com/sirupsen/logrus v1.4.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=
