@@ -88,3 +88,4 @@ func (cd *CloudDNS) RemoveRecord(cz *ConfigZone, r *Record) error {
 func (cd *CloudDNS) Save(cz *ConfigZone) error {
 	return nil
 }
+
