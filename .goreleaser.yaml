@@ -1,0 +1,2 @@
+builds:
+  - main: ./cmd/netbox2dns
