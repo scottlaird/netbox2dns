@@ -77,8 +77,10 @@ func (cd *CloudDNS) WriteRecord(cz *ConfigZone, r *Record) error {
 //
 // TODO: implement
 func (cd *CloudDNS) RemoveRecord(cz *ConfigZone, r *Record) error {
-	fmt.Printf("(should) remove %s %s %d %v\n", r.Name, r.Type, r.TTL, r.Rrdatas)
-	return nil
+	d := cd.rrss.Delete(cz.Project, cz.ZoneName, r.Name, r.Type)
+	_, err := d.Do()
+
+	return err
 }
 
 // Save flushes changes to Cloud DNS.  This is a no-op at the moment,
