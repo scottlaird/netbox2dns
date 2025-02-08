@@ -9,7 +9,7 @@ toolchain go1.22.2
 require (
 	cuelang.org/go v0.7.0
 	github.com/go-openapi/runtime v0.25.0
-	github.com/golang/glog v1.1.2
+	github.com/golang/glog v1.2.4
 	github.com/netbox-community/go-netbox/v3 v3.4.5
 	github.com/scottlaird/netboxlib v1.0.0
 	github.com/shuLhan/share v0.43.0
@@ -51,11 +51,11 @@ require (
 	go.opentelemetry.io/otel v1.21.0 // indirect
 	go.opentelemetry.io/otel/metric v1.21.0 // indirect
 	go.opentelemetry.io/otel/trace v1.21.0 // indirect
-	golang.org/x/crypto v0.21.0 // indirect
-	golang.org/x/net v0.23.0 // indirect
+	golang.org/x/crypto v0.31.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/oauth2 v0.15.0 // indirect
-	golang.org/x/sys v0.18.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231127180814-3a041ad873d4 // indirect
 	google.golang.org/grpc v1.59.0 // indirect
