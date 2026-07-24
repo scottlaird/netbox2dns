@@ -260,7 +260,7 @@ func reverseName6(addr netip.Addr) string {
 // both forward and reverse DNS entries.
 func (z *Zones) AddAddrs(addrs netbox.IPAddrs) error {
 	for _, addr := range addrs {
-		if addr.DNSName != "" && addr.Status == "active" {
+		if addr.DNSName != "" && (addr.Status == "active" || addr.Status == "dhcp") {
 			forward := Record{
 				Name:    addr.DNSName + ".",
 				Rrdatas: []string{addr.Address.Addr().String()},
